@@ -13,7 +13,7 @@
     "backfill:booking-process": "tsx src/backfill-booking-process-content.ts",
     "backfill:test-offers": "tsx src/backfill-offer-detail-sidebar-test-offers.ts",
     "backfill:destinations": "tsx src/backfill-destinations.ts",
-    "generate:importmap": "payload generate:importmap",
+    "generate:importmap": "cross-env CLOUDINARY_CLOUD_NAME=dummy CLOUDINARY_API_KEY=dummy CLOUDINARY_API_SECRET=dummy payload generate:importmap",
     "generate:types": "payload generate:types"
   },
   "dependencies": {
