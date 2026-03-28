@@ -3,7 +3,7 @@ import { fileURLToPath } from "url";
 import { buildConfig } from "payload";
 import { mongooseAdapter } from "@payloadcms/db-mongodb";
 import { lexicalEditor } from "@payloadcms/richtext-lexical";
-import { cloudinaryStorage } from "@jhb.software/payload-cloudinary-plugin";
+import { payloadCloudinaryPlugin } from "@jhb.software/payload-cloudinary-plugin";
 import sharp from "sharp";
 
 // Collections
@@ -30,7 +30,7 @@ const hasCloudinaryEnv =
 
 const payloadPlugins = hasCloudinaryEnv
   ? [
-      cloudinaryStorage({
+      payloadCloudinaryPlugin({
         collections: {
           media: true,
         },
