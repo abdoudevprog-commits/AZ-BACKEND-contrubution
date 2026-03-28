@@ -3,6 +3,7 @@ import { fileURLToPath } from "url";
 import { buildConfig } from "payload";
 import { mongooseAdapter } from "@payloadcms/db-mongodb";
 import { lexicalEditor } from "@payloadcms/richtext-lexical";
+import { cloudinaryStorage } from "@jhb.software/payload-cloudinary-plugin";
 import sharp from "sharp";
 
 // Collections
@@ -22,6 +23,27 @@ import { BookingProcessContent } from "./globals/BookingProcessContent";
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
+const hasCloudinaryEnv =
+  Boolean(process.env.CLOUDINARY_CLOUD_NAME) &&
+  Boolean(process.env.CLOUDINARY_API_KEY) &&
+  Boolean(process.env.CLOUDINARY_API_SECRET);
+
+const payloadPlugins = hasCloudinaryEnv
+  ? [
+      cloudinaryStorage({
+        collections: {
+          media: true,
+        },
+        cloudName: process.env.CLOUDINARY_CLOUD_NAME as string,
+        credentials: {
+          apiKey: process.env.CLOUDINARY_API_KEY as string,
+          apiSecret: process.env.CLOUDINARY_API_SECRET as string,
+        },
+        folder: process.env.CLOUDINARY_FOLDER || "agency-travel",
+      }),
+    ]
+  : [];
+
 const allowedOrigins = [
   "http://localhost:3000",
   "http://127.0.0.1:3000",
@@ -57,6 +79,8 @@ export default buildConfig({
   globals: [GalleryPage, HomePage, BookingProcessContent],
 
   editor: lexicalEditor(),
+
+  plugins: payloadPlugins,
 
   secret: process.env.PAYLOAD_SECRET || "default-secret-change-me",
 

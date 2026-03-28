@@ -16,6 +16,7 @@
     "generate:types": "payload generate:types"
   },
   "dependencies": {
+    "@jhb.software/payload-cloudinary-plugin": "^0.3.3",
     "@payloadcms/db-mongodb": "^3.0.0",
     "@payloadcms/next": "^3.0.0",
     "@payloadcms/richtext-lexical": "^3.0.0",

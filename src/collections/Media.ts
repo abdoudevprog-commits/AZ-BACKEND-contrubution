@@ -6,7 +6,6 @@ export const Media: CollectionConfig = {
     read: () => true, // Public read
   },
   upload: {
-    staticDir: "media",
     imageSizes: [
       { name: "thumbnail", width: 400, height: 300, position: "centre" },
       { name: "card", width: 768, height: 512, position: "centre" },
