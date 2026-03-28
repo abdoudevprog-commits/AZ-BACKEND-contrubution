@@ -28,26 +28,35 @@ const inferredRailwayURL = process.env.RAILWAY_PUBLIC_DOMAIN
   : undefined;
 const serverURL =
   process.env.NEXT_PUBLIC_SERVER_URL || inferredRailwayURL || "http://localhost:3001";
-const hasCloudinaryEnv =
-  Boolean(process.env.CLOUDINARY_CLOUD_NAME) &&
-  Boolean(process.env.CLOUDINARY_API_KEY) &&
-  Boolean(process.env.CLOUDINARY_API_SECRET);
+const requiredCloudinaryEnv = {
+  CLOUDINARY_CLOUD_NAME: process.env.CLOUDINARY_CLOUD_NAME,
+  CLOUDINARY_API_KEY: process.env.CLOUDINARY_API_KEY,
+  CLOUDINARY_API_SECRET: process.env.CLOUDINARY_API_SECRET,
+};
 
-const payloadPlugins = hasCloudinaryEnv
-  ? [
-      payloadCloudinaryPlugin({
-        collections: {
-          media: true,
-        },
-        cloudName: process.env.CLOUDINARY_CLOUD_NAME as string,
-        credentials: {
-          apiKey: process.env.CLOUDINARY_API_KEY as string,
-          apiSecret: process.env.CLOUDINARY_API_SECRET as string,
-        },
-        folder: process.env.CLOUDINARY_FOLDER || "agency-travel",
-      }),
-    ]
-  : [];
+const missingCloudinaryVars = Object.entries(requiredCloudinaryEnv)
+  .filter(([, value]) => !value)
+  .map(([key]) => key);
+
+if (missingCloudinaryVars.length > 0) {
+  throw new Error(
+    `Missing required Cloudinary environment variables: ${missingCloudinaryVars.join(", ")}. Uploads cannot fall back to local storage.`,
+  );
+}
+
+const payloadPlugins = [
+  payloadCloudinaryPlugin({
+    collections: {
+      media: true,
+    },
+    cloudName: requiredCloudinaryEnv.CLOUDINARY_CLOUD_NAME as string,
+    credentials: {
+      apiKey: requiredCloudinaryEnv.CLOUDINARY_API_KEY as string,
+      apiSecret: requiredCloudinaryEnv.CLOUDINARY_API_SECRET as string,
+    },
+    folder: process.env.CLOUDINARY_FOLDER || "agency-travel",
+  }),
+];
 
 const allowedOrigins = Array.from(
   new Set([
