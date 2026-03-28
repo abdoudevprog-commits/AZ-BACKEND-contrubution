@@ -23,6 +23,11 @@ import { BookingProcessContent } from "./globals/BookingProcessContent";
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
+const inferredRailwayURL = process.env.RAILWAY_PUBLIC_DOMAIN
+  ? `https://${process.env.RAILWAY_PUBLIC_DOMAIN}`
+  : undefined;
+const serverURL =
+  process.env.NEXT_PUBLIC_SERVER_URL || inferredRailwayURL || "http://localhost:3001";
 const hasCloudinaryEnv =
   Boolean(process.env.CLOUDINARY_CLOUD_NAME) &&
   Boolean(process.env.CLOUDINARY_API_KEY) &&
@@ -44,7 +49,8 @@ const payloadPlugins = hasCloudinaryEnv
     ]
   : [];
 
-const allowedOrigins = [
+const allowedOrigins = Array.from(
+  new Set([
   "http://localhost:3000",
   "http://127.0.0.1:3000",
   "http://localhost:5173",
@@ -53,7 +59,10 @@ const allowedOrigins = [
   "http://127.0.0.1:8080",
   "http://localhost:3001",
   "http://127.0.0.1:3001",
-];
+    serverURL,
+    inferredRailwayURL,
+  ].filter((origin): origin is string => Boolean(origin))),
+);
 
 export default buildConfig({
   admin: {
@@ -81,6 +90,8 @@ export default buildConfig({
   editor: lexicalEditor(),
 
   plugins: payloadPlugins,
+
+  serverURL,
 
   secret: process.env.PAYLOAD_SECRET || "default-secret-change-me",
 
