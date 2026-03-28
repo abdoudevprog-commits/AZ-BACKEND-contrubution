@@ -49,6 +49,7 @@ const payloadPlugins = [
     collections: {
       media: true,
     },
+    clientUploads: true,
     cloudName: requiredCloudinaryEnv.CLOUDINARY_CLOUD_NAME as string,
     credentials: {
       apiKey: requiredCloudinaryEnv.CLOUDINARY_API_KEY as string,
