@@ -32,6 +32,13 @@ const frontendOrigins = (process.env.FRONTEND_ORIGINS || "https://az-voyage.verc
   .split(",")
   .map((origin) => origin.trim())
   .filter(Boolean);
+const corsHeaders = (
+  process.env.CORS_HEADERS ||
+  "Origin, X-Requested-With, Content-Type, Accept, Authorization, Cache-Control, Pragma"
+)
+  .split(",")
+  .map((header) => header.trim())
+  .filter(Boolean);
 const requiredCloudinaryEnv = {
   CLOUDINARY_CLOUD_NAME: process.env.CLOUDINARY_CLOUD_NAME,
   CLOUDINARY_API_KEY: process.env.CLOUDINARY_API_KEY,
@@ -120,6 +127,9 @@ export default buildConfig({
     outputFile: path.resolve(dirname, "payload-types.ts"),
   },
 
-  cors: allowedOrigins,
+  cors: {
+    origins: allowedOrigins,
+    headers: corsHeaders,
+  },
   csrf: allowedOrigins,
 });
